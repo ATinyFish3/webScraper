@@ -24,17 +24,29 @@ def scraper():
     URL = BASE_WIKI_ADDRESS + wikiLinks[0]
     print(URL)
 
-    #
+    # Get summary
+    summaryResult = summary(URL)
+    print(summaryResult[0])
+    print(summaryResult[1])
+
 
     #Get headers from contents table || get from user input later
     #contentsHeaders = soup.find(id="toc")# id of contents
 
     #print(contentsHeaders.text)
 
+def getHTML(pageURL):
+    try:
+        page = requests.get(pageURL)
+    except:
+        sys.exit('Bad URL')
+    soup = BeautifulSoup(page.content, 'html.parser')
+
+    return soup
+
 def userSearch(searchTerm, numResults):
     searchReq = "https://en.wikipedia.org/w/index.php?search=" + searchTerm + "&title=Special:Search&profile=advanced&fulltext=1&ns0=1"
-    page = requests.get(searchReq)
-    soup = BeautifulSoup(page.content, "html.parser")
+    soup = getHTML(searchReq)
 
     allResults = soup.find_all('div', class_='mw-search-result-heading')
 
@@ -44,6 +56,16 @@ def userSearch(searchTerm, numResults):
         return allResults[:numResults]
     else:
         return False
+
+def summary(pageURL):
+    soup = getHTML(pageURL)
+    firstStuff = soup.find('div', class_='mw-parser-output')
+    if firstStuff == None:
+        sys.exit('Error in extracting summary info')
+    para1 = firstStuff.find('p').text
+    sent1 = para1.split('.')[0] + '.'
+
+    return para1, sent1
 
 if __name__ == '__main__':
     scraper()
