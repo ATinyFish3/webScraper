@@ -3,23 +3,28 @@
 import requests
 from bs4 import BeautifulSoup
 
+import sys
+
 def scraper():
     NUM_RESULTS = 3
     BASE_WIKI_ADDRESS = 'https://en.wikipedia.org'
 
+    search = 'Web Scraper'
     #Get results from user search
     wikiLinks = []
-    searchResults = userSearch("web scraping", NUM_RESULTS)
+    searchResults = userSearch(search, NUM_RESULTS)
+    if not searchResults:
+        sys.exit("No results found")
     for i in searchResults:
         wikiLinks.append(i.find('a')['href'])
-
-    #print(wikiLinks)
+    print(wikiLinks)
 
     #need to get user to choose which result they want to use, for now just use top result
 
     URL = BASE_WIKI_ADDRESS + wikiLinks[0]
     print(URL)
 
+    #
 
     #Get headers from contents table || get from user input later
     #contentsHeaders = soup.find(id="toc")# id of contents
@@ -32,7 +37,13 @@ def userSearch(searchTerm, numResults):
     soup = BeautifulSoup(page.content, "html.parser")
 
     allResults = soup.find_all('div', class_='mw-search-result-heading')
-    return allResults[:numResults]
+
+    #Need to add validation
+
+    if len(allResults) != 0:
+        return allResults[:numResults]
+    else:
+        return False
 
 if __name__ == '__main__':
     scraper()
