@@ -5,35 +5,35 @@ from bs4 import BeautifulSoup
 
 import sys
 
-def scraper():
-    NUM_RESULTS = 3
-    BASE_WIKI_ADDRESS = 'https://en.wikipedia.org'
 
-    search = 'Web Scraper'
-    #Get results from user search
-    wikiLinks = []
-    searchResults = userSearch(search, NUM_RESULTS)
+def scraper():  # main scraping function
+    NUM_RESULTS = 3  # number of results that the searching should return
+    BASE_WIKI_ADDRESS = 'https://en.wikipedia.org'  # wiki URL to prepend to URLs
+
+    SEARCH = 'AI'  # the 'user' search to be replaced with input
+
+    # Get results from user search
+    wikiLinks = []  # store links to search result pages
+    searchResults = userSearch(SEARCH, NUM_RESULTS)
     if not searchResults:
         sys.exit("No results found")
     for i in searchResults:
         wikiLinks.append(i.find('a')['href'])
-    print(wikiLinks)
+    # print(wikiLinks)
 
-    #need to get user to choose which result they want to use, for now just use top result
+    # need to get user to choose which result they want to use, for now just use top result
 
     URL = BASE_WIKI_ADDRESS + wikiLinks[0]
-    print(URL)
+    print('Page URL: ', URL)
 
     # Get summary
-    summaryResult = summary(URL)
-    print(summaryResult[0])
-    print(summaryResult[1])
+    if True:  # Replace with user input
+        summary(URL)
 
+    # Get headers from contents table || get from user input later
+    # contentsHeaders = soup.find(id="toc")# id of contents
 
-    #Get headers from contents table || get from user input later
-    #contentsHeaders = soup.find(id="toc")# id of contents
-
-    #print(contentsHeaders.text)
+    # print(contentsHeaders.text)
 
 def getHTML(pageURL):
     try:
@@ -50,7 +50,7 @@ def userSearch(searchTerm, numResults):
 
     allResults = soup.find_all('div', class_='mw-search-result-heading')
 
-    #Need to add validation
+    # Need to add validation
 
     if len(allResults) != 0:
         return allResults[:numResults]
@@ -59,13 +59,20 @@ def userSearch(searchTerm, numResults):
 
 def summary(pageURL):
     soup = getHTML(pageURL)
-    firstStuff = soup.find('div', class_='mw-parser-output')
-    if firstStuff == None:
-        sys.exit('Error in extracting summary info')
-    para1 = firstStuff.find('p').text
-    sent1 = para1.split('.')[0] + '.'
-
-    return para1, sent1
+    # firstStuff = soup.find('div', class_='mw-parser-output')
+    try:
+        paras = soup.select('p')
+    except:
+        sys.exit('Error in extracting summary info')  # keep to handle exceptionos
+    numParas = len(paras)  # don't access summarResult[5] if only 2 elements
+    # print(numParas)
+    if numParas != 0:
+        para1 = paras[0].text
+        print(para1)
+    if numParas >= 2:
+        para2 = paras[1].text
+        print(para2)
+        # print(summaryResult[1].text)
 
 if __name__ == '__main__':
     scraper()
