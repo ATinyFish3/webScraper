@@ -10,7 +10,7 @@ def scraper():  # main scraping function
     NUM_RESULTS = 3  # number of results that the searching should return
     BASE_WIKI_ADDRESS = 'https://en.wikipedia.org'  # wiki URL to prepend to URLs
 
-    SEARCH = 'web scraping'  # the 'user' search to be replaced with input
+    SEARCH = 'ai'  # the 'user' search to be replaced with input
 
     # Get results from user search
     wikiLinks = []  # store links to search result pages
@@ -30,10 +30,16 @@ def scraper():  # main scraping function
     if True:  # Replace with user input
         summary(URL)
 
+    # Get all text
+    if True:
+        print('allText here')
+        # allText(URL)
+
     # Get headers from contents table || get from user input later
     # contentsHeaders = soup.find(id="toc")# id of contents
 
     # print(contentsHeaders.text)
+
 
 def getHTML(pageURL):
     try:
@@ -44,6 +50,7 @@ def getHTML(pageURL):
 
     return soup
 
+
 def userSearch(searchTerm, numResults):
     searchReq = "https://en.wikipedia.org/w/index.php?search=" + searchTerm + "&title=Special:Search&profile=advanced&fulltext=1&ns0=1"
     soup = getHTML(searchReq)
@@ -52,19 +59,19 @@ def userSearch(searchTerm, numResults):
 
     # Need to add validation
 
-    if len(allResults) != 0:
+    if allResults:
         return allResults[:numResults]
     else:
         return False
 
+
 def summary(pageURL):
     soup = getHTML(pageURL)
-    # firstStuff = soup.find('div', class_='mw-parser-output')
     try:
         paras = soup.select('p')
     except:
         sys.exit('Error in extracting summary info')  # keep to handle exceptionos
-    numParas = len(paras)  # don't access summarResult[5] if only 2 elements
+    numParas = len(paras)  # don't access paras[5] if only 2 elements
     # print(numParas)
     if numParas >= 2 and len(paras[0]) <= 1:
         print(paras[1].text)
@@ -72,6 +79,17 @@ def summary(pageURL):
         print(paras[0].text)
     else:
         print('Summary unavailable')
+
+# Better if get rid of things in []
+def allText(pageURL):  # Return all text from wiki page
+    soup = getHTML(pageURL)
+    try:
+        paras = soup.select('p')
+    except:
+        sys.exit('Error in extracting summary info')  # keep to handle exceptionos
+    for i in paras:
+        print(i.text)
+
 
 if __name__ == '__main__':
     scraper()
