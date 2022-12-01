@@ -10,7 +10,7 @@ def scraper():  # main scraping function
     NUM_RESULTS = 3  # number of results that the searching should return
     BASE_WIKI_ADDRESS = 'https://en.wikipedia.org'  # wiki URL to prepend to URLs
 
-    SEARCH = 'AI'  # the 'user' search to be replaced with input
+    SEARCH = 'web scraping'  # the 'user' search to be replaced with input
 
     # Get results from user search
     wikiLinks = []  # store links to search result pages
@@ -66,13 +66,12 @@ def summary(pageURL):
         sys.exit('Error in extracting summary info')  # keep to handle exceptionos
     numParas = len(paras)  # don't access summarResult[5] if only 2 elements
     # print(numParas)
-    if numParas != 0:
-        para1 = paras[0].text
-        print(para1)
-    if numParas >= 2:
-        para2 = paras[1].text
-        print(para2)
-        # print(summaryResult[1].text)
+    if numParas >= 2 and len(paras[0]) <= 1:
+        print(paras[1].text)
+    elif numParas != 0:
+        print(paras[0].text)
+    else:
+        print('Summary unavailable')
 
 if __name__ == '__main__':
     scraper()
