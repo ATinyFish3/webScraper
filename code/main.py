@@ -33,8 +33,14 @@ def scraper():  # main scraping function
 
     # Get all text
     if True:
-        print('allText here')
-        # allText(URL)
+        soup = getHTML(URL)
+        try:
+            paras = soup.select('p')
+        except:
+            sys.exit('Error in extracting summary info')  # keep to handle exceptionos
+
+        for p in paras:
+            print(re.sub(r'\[[^\]]*\]', '', p.text))
 
     # Get headers from contents table || get from user input later
     # contentsHeaders = soup.find(id="toc")# id of contents
