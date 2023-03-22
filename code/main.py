@@ -87,7 +87,7 @@ def summary(pageURL):
         text = re.sub(r'[^\w\s]', '', text)
         # Find the first paragraph with more than 50 characters (excluding spaces)
         if len(text.replace(' ', '')) > 50:
-            return text
+            return return re.sub(r'\[[^\]]*\]', '', p.text)
     return "Summary not available"
 
 
